@@ -10,6 +10,7 @@ import {
 import DashboardLayout from '../components/layout/DashboardLayout'
 import Card from '../components/ui/Card'
 import { useAuth } from '../context/AuthContext'
+import { formatEuro } from '../utils/format'
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -58,10 +59,6 @@ const EVENING_START = 18
 const MONTHLY_CHART_MAX = 4000
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatEuro(value) {
-  return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value)
-}
 
 function getGreeting() {
   const hour = new Date().getHours()

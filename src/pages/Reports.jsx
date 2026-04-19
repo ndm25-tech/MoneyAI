@@ -2,12 +2,7 @@ import { useState } from 'react'
 import { TrendingUp, TrendingDown, Lightbulb, Download } from 'lucide-react'
 import DashboardLayout from '../components/layout/DashboardLayout'
 import Card from '../components/ui/Card'
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatEuro(amount) {
-  return amount.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })
-}
+import { formatEuro } from '../utils/format'
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 

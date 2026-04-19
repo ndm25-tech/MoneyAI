@@ -7,20 +7,7 @@ import Input from '../components/ui/Input'
 import Select from '../components/ui/Select'
 import Modal from '../components/ui/Modal'
 import Badge from '../components/ui/Badge'
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatEuro(amount) {
-  return amount.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })
-}
-
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('de-DE', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
+import { formatEuro, formatDate } from '../utils/format'
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 

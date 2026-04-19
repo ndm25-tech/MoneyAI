@@ -8,6 +8,7 @@ import {
   Settings,
   LogOut,
   Wallet,
+  Star,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
@@ -71,6 +72,22 @@ function Sidebar({ onClose }) {
             {label}
           </NavLink>
         ))}
+
+        {/* Premium link */}
+        <NavLink
+          to="/premium"
+          onClick={onClose}
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+              isActive
+                ? 'bg-yellow-500 text-white shadow-md'
+                : 'text-yellow-400 hover:bg-yellow-500/20 hover:text-yellow-300'
+            }`
+          }
+        >
+          <Star className="w-5 h-5 flex-shrink-0" />
+          Premium
+        </NavLink>
       </nav>
 
       {/* Logout */}

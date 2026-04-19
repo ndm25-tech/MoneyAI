@@ -9,6 +9,7 @@ import Income from './pages/Income'
 import Reports from './pages/Reports'
 import AIChat from './pages/AIChat'
 import Settings from './pages/Settings'
+import Premium from './pages/Premium'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -62,6 +63,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Settings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/premium"
+        element={
+          <ProtectedRoute>
+            <Premium />
           </ProtectedRoute>
         }
       />

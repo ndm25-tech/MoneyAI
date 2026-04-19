@@ -1,9 +1,18 @@
 import { createContext, useContext, useState } from 'react'
 
+const STORAGE_KEY = 'moneyai_user'
+
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      return stored ? JSON.parse(stored) : null
+    } catch {
+      return null
+    }
+  })
   const [loading, setLoading] = useState(false)
 
   const login = async (email, password) => {
@@ -11,7 +20,13 @@ export function AuthProvider({ children }) {
     try {
       // Mock login — replace with Firebase Auth later
       await new Promise((resolve) => setTimeout(resolve, 800))
-      setUser({ email, name: email.split('@')[0], uid: 'mock-uid-123' })
+      const newUser = { email, name: email.split('@')[0], uid: 'mock-uid-123' }
+      setUser(newUser)
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser))
+      } catch {
+        // ignore storage errors (e.g. quota, private mode)
+      }
     } finally {
       setLoading(false)
     }
@@ -22,7 +37,13 @@ export function AuthProvider({ children }) {
     try {
       // Mock register — replace with Firebase Auth later
       await new Promise((resolve) => setTimeout(resolve, 800))
-      setUser({ email, name, uid: 'mock-uid-456' })
+      const newUser = { email, name, uid: 'mock-uid-456' }
+      setUser(newUser)
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser))
+      } catch {
+        // ignore storage errors
+      }
     } finally {
       setLoading(false)
     }
@@ -33,6 +54,11 @@ export function AuthProvider({ children }) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 300))
       setUser(null)
+      try {
+        localStorage.removeItem(STORAGE_KEY)
+      } catch {
+        // ignore storage errors
+      }
     } finally {
       setLoading(false)
     }

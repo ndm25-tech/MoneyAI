@@ -8,6 +8,7 @@ import Select from '../components/ui/Select'
 import Modal from '../components/ui/Modal'
 import Badge from '../components/ui/Badge'
 import { formatEuro, formatDate } from '../utils/format'
+import { useTransactions } from '../context/TransactionContext'
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 
@@ -48,24 +49,6 @@ function makeId() {
   return ++_nextId
 }
 
-const INITIAL_EXPENSES = [
-  { id: 1,  date: '2026-04-01', description: 'Miete April',         category: 'Miete',         amount: 800.00, note: 'Monatliche Miete' },
-  { id: 2,  date: '2026-04-02', description: 'REWE Einkauf',        category: 'Lebensmittel',  amount: 87.45,  note: '' },
-  { id: 3,  date: '2026-04-03', description: 'BVG Monatskarte',     category: 'Transport',     amount: 86.00,  note: 'April Ticket' },
-  { id: 4,  date: '2026-04-05', description: 'Netflix',             category: 'Unterhaltung',  amount: 17.99,  note: '' },
-  { id: 5,  date: '2026-04-07', description: 'Lidl Wocheneinkauf',  category: 'Lebensmittel',  amount: 63.20,  note: '' },
-  { id: 6,  date: '2026-04-09', description: 'Zara Jacke',          category: 'Shopping',      amount: 89.99,  note: 'Frühlingsjacke' },
-  { id: 7,  date: '2026-04-10', description: 'Zahnarzt',            category: 'Gesundheit',    amount: 45.00,  note: 'Routineuntersuchung' },
-  { id: 8,  date: '2026-04-12', description: 'Udemy Kurs',          category: 'Bildung',       amount: 19.99,  note: 'React Kurs' },
-  { id: 9,  date: '2026-04-14', description: 'KFZ-Versicherung',    category: 'Versicherung',  amount: 112.00, note: 'Quartalsrate' },
-  { id: 10, date: '2026-04-15', description: 'Rossmann',            category: 'Lebensmittel',  amount: 34.70,  note: '' },
-  { id: 11, date: '2026-04-16', description: 'Spotify',             category: 'Unterhaltung',  amount: 9.99,   note: '' },
-  { id: 12, date: '2026-04-17', description: 'Tank (Benzin)',       category: 'Transport',     amount: 72.50,  note: '' },
-  { id: 13, date: '2026-04-18', description: 'Amazon Bestellung',   category: 'Shopping',      amount: 54.99,  note: 'Bücherpakete' },
-  { id: 14, date: '2026-04-20', description: 'ALDI Wocheneinkauf',  category: 'Lebensmittel',  amount: 52.10,  note: '' },
-  { id: 15, date: '2026-04-22', description: 'Kino',                category: 'Unterhaltung',  amount: 15.60,  note: 'Avengers' },
-]
-
 // ─── Empty form state ─────────────────────────────────────────────────────────
 
 const EMPTY_FORM = { description: '', amount: '', category: '', date: '', note: '' }
@@ -73,7 +56,7 @@ const EMPTY_FORM = { description: '', amount: '', category: '', date: '', note: 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 function Expenses() {
-  const [expenses, setExpenses] = useState(INITIAL_EXPENSES)
+  const { expenses, addExpense, updateExpense, deleteExpense } = useTransactions()
   const [selectedMonth, setSelectedMonth] = useState('2026-04')
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
@@ -166,15 +149,15 @@ function Expenses() {
       note: form.note.trim(),
     }
     if (editingId) {
-      setExpenses((prev) => prev.map((e) => (e.id === editingId ? entry : e)))
+      updateExpense(editingId, entry)
     } else {
-      setExpenses((prev) => [entry, ...prev])
+      addExpense(entry)
     }
     closeModal()
   }
 
   function handleDelete(id) {
-    setExpenses((prev) => prev.filter((e) => e.id !== id))
+    deleteExpense(id)
     setDeleteId(null)
   }
 

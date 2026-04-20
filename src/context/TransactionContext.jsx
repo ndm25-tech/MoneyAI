@@ -1,6 +1,20 @@
-import { createContext, useContext, useState, useMemo } from 'react'
+import { createContext, useContext, useState, useMemo, useEffect } from 'react'
 
 const TransactionContext = createContext(null)
+
+const EXPENSES_STORAGE_KEY = 'moneyai_expenses'
+const INCOME_STORAGE_KEY = 'moneyai_income'
+
+function loadFromStorage(key, fallback) {
+  try {
+    const stored = localStorage.getItem(key)
+    if (!stored) return fallback
+    const parsed = JSON.parse(stored)
+    return Array.isArray(parsed) ? parsed : fallback
+  } catch {
+    return fallback
+  }
+}
 
 // ─── Mock initial data (moved from Expenses.jsx and Income.jsx) ───────────────
 
@@ -33,8 +47,8 @@ const INITIAL_INCOME = [
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function TransactionProvider({ children }) {
-  const [expenses, setExpenses] = useState(INITIAL_EXPENSES)
-  const [income, setIncome] = useState(INITIAL_INCOME)
+  const [expenses, setExpenses] = useState(() => loadFromStorage(EXPENSES_STORAGE_KEY, INITIAL_EXPENSES))
+  const [income, setIncome] = useState(() => loadFromStorage(INCOME_STORAGE_KEY, INITIAL_INCOME))
 
   const addExpense = (expense) => setExpenses((prev) => [expense, ...prev])
   const updateExpense = (id, updated) =>
@@ -47,6 +61,22 @@ export function TransactionProvider({ children }) {
     setIncome((prev) => prev.map((i) => (i.id === id ? { ...i, ...updated } : i)))
   const deleteIncome = (id) =>
     setIncome((prev) => prev.filter((i) => i.id !== id))
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(EXPENSES_STORAGE_KEY, JSON.stringify(expenses))
+    } catch {
+      // ignore quota / private mode errors
+    }
+  }, [expenses])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(INCOME_STORAGE_KEY, JSON.stringify(income))
+    } catch {
+      // ignore quota / private mode errors
+    }
+  }, [income])
 
   const totals = useMemo(() => {
     const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0)

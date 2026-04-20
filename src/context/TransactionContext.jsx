@@ -16,6 +16,17 @@ function loadFromStorage(key, fallback) {
   }
 }
 
+// ─── ID generator ────────────────────────────────────────────────────────────
+
+function generateId() {
+  // crypto.randomUUID ist in allen modernen Browsern verfügbar (Chrome 92+, Safari 15.4+, Firefox 95+)
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+  // Fallback für sehr alte Browser oder SSR-Umgebungen
+  return `id-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
+}
+
 // ─── Mock initial data (moved from Expenses.jsx and Income.jsx) ───────────────
 
 const INITIAL_EXPENSES = [
@@ -50,13 +61,13 @@ export function TransactionProvider({ children }) {
   const [expenses, setExpenses] = useState(() => loadFromStorage(EXPENSES_STORAGE_KEY, INITIAL_EXPENSES))
   const [income, setIncome] = useState(() => loadFromStorage(INCOME_STORAGE_KEY, INITIAL_INCOME))
 
-  const addExpense = (expense) => setExpenses((prev) => [expense, ...prev])
+  const addExpense = (expense) => setExpenses((prev) => [{ ...expense, id: generateId() }, ...prev])
   const updateExpense = (id, updated) =>
     setExpenses((prev) => prev.map((e) => (e.id === id ? { ...e, ...updated } : e)))
   const deleteExpense = (id) =>
     setExpenses((prev) => prev.filter((e) => e.id !== id))
 
-  const addIncome = (entry) => setIncome((prev) => [entry, ...prev])
+  const addIncome = (entry) => setIncome((prev) => [{ ...entry, id: generateId() }, ...prev])
   const updateIncome = (id, updated) =>
     setIncome((prev) => prev.map((i) => (i.id === id ? { ...i, ...updated } : i)))
   const deleteIncome = (id) =>

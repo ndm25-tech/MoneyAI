@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { User, Lock, Globe, Bell, Sun, CreditCard, AlertTriangle, Check } from 'lucide-react'
 import DashboardLayout from '../components/layout/DashboardLayout'
@@ -9,6 +9,46 @@ import Toggle from '../components/ui/Toggle'
 import Modal from '../components/ui/Modal'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+
+const SETTINGS_STORAGE_KEY = 'moneyai_settings'
+
+const DEFAULT_SETTINGS = {
+  currency: 'EUR',
+  language: 'de',
+  monthlyBudget: 2000,
+  weekStart: 'monday',
+  notif: {
+    budgetWarning: true,
+    weeklyReport: false,
+    aiTips: true,
+    updates: true,
+  },
+  compactView: false,
+}
+
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_STORAGE_KEY)
+    if (!raw) return DEFAULT_SETTINGS
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object') return DEFAULT_SETTINGS
+    return {
+      ...DEFAULT_SETTINGS,
+      ...parsed,
+      notif: { ...DEFAULT_SETTINGS.notif, ...(parsed.notif || {}) },
+    }
+  } catch {
+    return DEFAULT_SETTINGS
+  }
+}
+
+function saveSettings(settings) {
+  try {
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings))
+  } catch {
+    // ignore
+  }
+}
 
 function SuccessBanner({ message, onDismiss }) {
   if (!message) return null
@@ -38,22 +78,18 @@ function Settings() {
   const [pwSuccess, setPwSuccess] = useState('')
 
   // Preferences
-  const [currency, setCurrency] = useState('EUR')
-  const [language, setLanguage] = useState('de')
-  const [monthlyBudget, setMonthlyBudget] = useState(2000)
-  const [weekStart, setWeekStart] = useState('monday')
+  const initial = useMemo(() => loadSettings(), [])
+  const [currency, setCurrency] = useState(initial.currency)
+  const [language, setLanguage] = useState(initial.language)
+  const [monthlyBudget, setMonthlyBudget] = useState(initial.monthlyBudget)
+  const [weekStart, setWeekStart] = useState(initial.weekStart)
   const [prefsSuccess, setPrefsSuccess] = useState('')
 
   // Notifications
-  const [notif, setNotif] = useState({
-    budgetWarning: true,
-    weeklyReport: false,
-    aiTips: true,
-    updates: true,
-  })
+  const [notif, setNotif] = useState(initial.notif)
 
   // Appearance
-  const [compactView, setCompactView] = useState(false)
+  const [compactView, setCompactView] = useState(initial.compactView)
 
   // Subscription
   const isPremium = false
@@ -61,6 +97,17 @@ function Settings() {
   // Danger modals
   const [showDeleteDataModal, setShowDeleteDataModal] = useState(false)
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false)
+
+  useEffect(() => {
+    saveSettings({
+      currency,
+      language,
+      monthlyBudget,
+      weekStart,
+      notif,
+      compactView,
+    })
+  }, [currency, language, monthlyBudget, weekStart, notif, compactView])
 
   const handleSaveProfile = () => {
     setProfileSuccess('Profil erfolgreich gespeichert!')

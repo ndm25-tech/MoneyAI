@@ -8,6 +8,7 @@ import Select from '../components/ui/Select'
 import Modal from '../components/ui/Modal'
 import Badge from '../components/ui/Badge'
 import { formatEuro, formatDate } from '../utils/format'
+import { useTransactions } from '../context/TransactionContext'
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 
@@ -45,14 +46,6 @@ function makeId() {
   return ++_nextId
 }
 
-const INITIAL_INCOME = [
-  { id: 1, date: '2026-04-01', description: 'Gehalt April',       category: 'Gehalt',        amount: 3250.00, note: 'Netto-Gehalt' },
-  { id: 2, date: '2026-04-05', description: 'Freelance Projekt',  category: 'Freelance',     amount: 500.00,  note: 'Website für Kunde Schmidt' },
-  { id: 3, date: '2026-04-10', description: 'Dividenden',         category: 'Investitionen', amount: 45.00,   note: 'ETF Ausschüttung' },
-  { id: 4, date: '2026-04-15', description: 'Nebenjob Samstag',   category: 'Nebenjob',      amount: 200.00,  note: 'Barkeeper' },
-  { id: 5, date: '2026-04-20', description: 'Rückerstattung',     category: 'Sonstiges',     amount: 35.00,   note: 'Krankenkasse' },
-]
-
 // ─── Empty form state ─────────────────────────────────────────────────────────
 
 const EMPTY_FORM = { description: '', amount: '', category: '', date: '', note: '' }
@@ -60,7 +53,7 @@ const EMPTY_FORM = { description: '', amount: '', category: '', date: '', note: 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 function Income() {
-  const [income, setIncome] = useState(INITIAL_INCOME)
+  const { income, addIncome, updateIncome, deleteIncome } = useTransactions()
   const [selectedMonth, setSelectedMonth] = useState('2026-04')
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
@@ -152,15 +145,15 @@ function Income() {
       note: form.note.trim(),
     }
     if (editingId) {
-      setIncome((prev) => prev.map((e) => (e.id === editingId ? entry : e)))
+      updateIncome(editingId, entry)
     } else {
-      setIncome((prev) => [entry, ...prev])
+      addIncome(entry)
     }
     closeModal()
   }
 
   function handleDelete(id) {
-    setIncome((prev) => prev.filter((e) => e.id !== id))
+    deleteIncome(id)
     setDeleteId(null)
   }
 

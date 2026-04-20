@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
   TrendingUp,
@@ -10,16 +11,10 @@ import {
 import DashboardLayout from '../components/layout/DashboardLayout'
 import Card from '../components/ui/Card'
 import { useAuth } from '../context/AuthContext'
+import { useTransactions } from '../context/TransactionContext'
 import { formatEuro } from '../utils/format'
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
-
-const OVERVIEW = {
-  income: 3250.0,
-  expenses: 1847.5,
-  balance: 1402.5,
-  savingsRate: 43.2,
-}
 
 const EXPENSE_CATEGORIES = [
   { label: 'Miete', amount: 800, color: 'bg-blue-500' },
@@ -39,17 +34,7 @@ const MONTHLY_DATA = [
   { month: 'Apr', income: 3250, expenses: 1847.5 },
 ]
 
-const TRANSACTIONS = [
-  { date: '17.04', description: 'Supermarkt REWE', category: 'Lebensmittel', amount: -45.8 },
-  { date: '16.04', description: 'Gehalt April', category: 'Gehalt', amount: 3250.0 },
-  { date: '15.04', description: 'Netflix Abo', category: 'Unterhaltung', amount: -12.99 },
-  { date: '14.04', description: 'Tanken Shell', category: 'Transport', amount: -65.0 },
-  { date: '13.04', description: 'Amazon Bestellung', category: 'Shopping', amount: -89.99 },
-  { date: '12.04', description: 'Restaurant Luigi', category: 'Lebensmittel', amount: -38.5 },
-  { date: '10.04', description: 'Miete April', category: 'Miete', amount: -800.0 },
-]
-
-const BUDGET = { total: 2000, spent: 1847.5 }
+const BUDGET = { total: 2000, spent: 1847.5}
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -260,7 +245,33 @@ function BudgetProgress() {
 
 function Dashboard() {
   const { user } = useAuth()
+  const { expenses, income, totalExpenses, totalIncome, balance, savingsRate } = useTransactions()
   const username = user?.name || 'Nutzer'
+
+  // ── Combined last transactions (expenses + income), sorted by date desc, max 7
+  const recentTransactions = useMemo(() => {
+    const expenseRows = expenses.map((e) => ({
+      id: `e-${e.id}`,
+      date: e.date,
+      description: e.description,
+      category: e.category,
+      amount: -e.amount,
+    }))
+    const incomeRows = income.map((i) => ({
+      id: `i-${i.id}`,
+      date: i.date,
+      description: i.description,
+      category: i.category,
+      amount: i.amount,
+    }))
+    return [...expenseRows, ...incomeRows]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 7)
+      .map((tx) => {
+        const [, month, day] = tx.date.split('-')
+        return { ...tx, date: `${day}.${month}` }
+      })
+  }, [expenses, income])
 
   return (
     <DashboardLayout>
@@ -279,7 +290,7 @@ function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <OverviewCard
             title="Einnahmen"
-            value={formatEuro(OVERVIEW.income)}
+            value={formatEuro(totalIncome)}
             trend="+12% vs. letzter Monat"
             icon={TrendingUp}
             iconBg="bg-green-100"
@@ -288,7 +299,7 @@ function Dashboard() {
           />
           <OverviewCard
             title="Ausgaben"
-            value={formatEuro(OVERVIEW.expenses)}
+            value={formatEuro(totalExpenses)}
             trend="-5% vs. letzter Monat"
             icon={TrendingDown}
             iconBg="bg-red-100"
@@ -297,7 +308,7 @@ function Dashboard() {
           />
           <OverviewCard
             title="Bilanz"
-            value={formatEuro(OVERVIEW.balance)}
+            value={formatEuro(balance)}
             subtitle="Einnahmen − Ausgaben"
             icon={Wallet}
             iconBg="bg-blue-100"
@@ -306,7 +317,7 @@ function Dashboard() {
           />
           <OverviewCard
             title="Sparquote"
-            value={`${OVERVIEW.savingsRate}%`}
+            value={`${savingsRate.toFixed(1)}%`}
             subtitle="diesen Monat"
             icon={Target}
             iconBg="bg-purple-100"
@@ -345,8 +356,8 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {TRANSACTIONS.map((tx) => (
-                  <TransactionRow key={`${tx.date}-${tx.description}`} tx={tx} />
+                {recentTransactions.map((tx) => (
+                  <TransactionRow key={tx.id} tx={tx} />
                 ))}
               </tbody>
             </table>
@@ -354,8 +365,8 @@ function Dashboard() {
 
           {/* Mobile cards */}
           <div className="md:hidden px-6 py-2">
-            {TRANSACTIONS.map((tx) => (
-              <TransactionCard key={`${tx.date}-${tx.description}`} tx={tx} />
+            {recentTransactions.map((tx) => (
+              <TransactionCard key={tx.id} tx={tx} />
             ))}
           </div>
         </Card>

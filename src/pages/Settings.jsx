@@ -8,6 +8,7 @@ import Input from '../components/ui/Input'
 import Toggle from '../components/ui/Toggle'
 import Modal from '../components/ui/Modal'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 
 function SuccessBanner({ message, onDismiss }) {
   if (!message) return null
@@ -23,6 +24,7 @@ function SuccessBanner({ message, onDismiss }) {
 function Settings() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { darkMode, toggleDarkMode } = useTheme()
 
   // Profile
   const [profileName, setProfileName] = useState(user?.name || '')
@@ -51,7 +53,6 @@ function Settings() {
   })
 
   // Appearance
-  const [darkMode, setDarkMode] = useState(false)
   const [compactView, setCompactView] = useState(false)
 
   // Subscription
@@ -304,7 +305,7 @@ function Settings() {
             <Toggle
               id="dark-mode"
               checked={darkMode}
-              onChange={setDarkMode}
+              onChange={toggleDarkMode}
               label="Dark Mode"
             />
             <Toggle

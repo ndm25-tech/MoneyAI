@@ -6,7 +6,7 @@ function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex flex-shrink-0">
         <Sidebar />
@@ -31,10 +31,10 @@ function DashboardLayout({ children }) {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile topbar */}
-        <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
+        <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-lg text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             aria-label="Sidebar öffnen"
           >
             <Menu className="w-6 h-6" />

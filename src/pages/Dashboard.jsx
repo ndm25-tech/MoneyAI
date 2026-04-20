@@ -34,7 +34,7 @@ const MONTHLY_DATA = [
   { month: 'Apr', income: 3250, expenses: 1847.5 },
 ]
 
-const BUDGET = { total: 2000, spent: 1847.5}
+const BUDGET = { total: 2000, spent: 1847.5 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 

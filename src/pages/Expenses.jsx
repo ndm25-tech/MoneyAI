@@ -7,7 +7,7 @@ import Input from '../components/ui/Input'
 import Select from '../components/ui/Select'
 import Modal from '../components/ui/Modal'
 import Badge from '../components/ui/Badge'
-import { formatEuro, formatDate } from '../utils/format'
+import { formatEuro, formatDate, getYearMonthKey, getMonthLabel } from '../utils/format'
 import { useTransactions } from '../context/TransactionContext'
 
 // ─── Categories ───────────────────────────────────────────────────────────────
@@ -33,13 +33,10 @@ const CATEGORY_OPTIONS = [
 
 // ─── Month selector ────────────────────────────────────────────────────────────
 
-const MONTHS = [
-  { value: '2026-04', label: 'April 2026' },
-  { value: '2026-03', label: 'März 2026' },
-  { value: '2026-02', label: 'Februar 2026' },
-  { value: '2026-01', label: 'Januar 2026' },
-  { value: '2025-12', label: 'Dezember 2025' },
-]
+const MONTHS = Array.from({ length: 5 }, (_, i) => ({
+  value: getYearMonthKey(-i),
+  label: getMonthLabel(-i),
+}))
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -57,7 +54,7 @@ const EMPTY_FORM = { description: '', amount: '', category: '', date: '', note: 
 
 function Expenses() {
   const { expenses, addExpense, updateExpense, deleteExpense } = useTransactions()
-  const [selectedMonth, setSelectedMonth] = useState('2026-04')
+  const [selectedMonth, setSelectedMonth] = useState(getYearMonthKey)
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)

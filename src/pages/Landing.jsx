@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
+import { getMonthLabel } from '../utils/format'
 
 const features = [
   {
@@ -158,7 +159,7 @@ function Landing() {
                 {/* Mockup header */}
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="font-semibold text-lg">Finanz-Übersicht</h3>
-                  <span className="text-xs bg-accent-500/20 text-accent-300 px-2 py-1 rounded-full">April 2026</span>
+                  <span className="text-xs bg-accent-500/20 text-accent-300 px-2 py-1 rounded-full">{getMonthLabel()}</span>
                 </div>
 
                 {/* Stats */}

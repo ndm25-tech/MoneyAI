@@ -2,18 +2,14 @@ import { useState } from 'react'
 import { TrendingUp, TrendingDown, Lightbulb, Download } from 'lucide-react'
 import DashboardLayout from '../components/layout/DashboardLayout'
 import Card from '../components/ui/Card'
-import { formatEuro } from '../utils/format'
+import { formatEuro, getYearMonthKey, getMonthLabel } from '../utils/format'
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
-const MONTHS = [
-  { value: '2026-04', label: 'April 2026' },
-  { value: '2026-03', label: 'März 2026' },
-  { value: '2026-02', label: 'Februar 2026' },
-  { value: '2026-01', label: 'Januar 2026' },
-  { value: '2025-12', label: 'Dezember 2025' },
-  { value: '2025-11', label: 'November 2025' },
-]
+const MONTHS = Array.from({ length: 6 }, (_, i) => ({
+  value: getYearMonthKey(-i),
+  label: getMonthLabel(-i),
+}))
 
 const OVERVIEW = {
   income: 4030.0,
@@ -85,7 +81,7 @@ function HorizontalBar({ label, amount, total, color }) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 function Reports() {
-  const [selectedMonth, setSelectedMonth] = useState('2026-04')
+  const [selectedMonth, setSelectedMonth] = useState(getYearMonthKey)
 
   const totalExpenses = EXPENSE_CATEGORIES.reduce((s, c) => s + c.amount, 0)
   const totalIncome = INCOME_SOURCES.reduce((s, c) => s + c.amount, 0)

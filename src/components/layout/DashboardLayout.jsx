@@ -1,9 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import Sidebar from './Sidebar'
 
 function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const location = useLocation()
+
+  // Auto-close sidebar on route change
+  useEffect(() => {
+    setSidebarOpen(false)
+  }, [location.pathname])
+
+  // Lock body scroll while mobile overlay is open
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [sidebarOpen])
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">

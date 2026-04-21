@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { TransactionProvider } from './context/TransactionContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
+import { SettingsProvider } from './context/SettingsContext.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -12,9 +13,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ThemeProvider>
       <BrowserRouter>
         <AuthProvider>
-          <TransactionProvider>
-            <App />
-          </TransactionProvider>
+          <SettingsProvider>
+            <TransactionProvider>
+              <App />
+            </TransactionProvider>
+          </SettingsProvider>
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>

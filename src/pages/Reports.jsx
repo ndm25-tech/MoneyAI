@@ -2,8 +2,9 @@ import { useState, useMemo } from 'react'
 import { TrendingUp, TrendingDown, Lightbulb, Download } from 'lucide-react'
 import DashboardLayout from '../components/layout/DashboardLayout'
 import Card from '../components/ui/Card'
-import { formatEuro, getYearMonthKey, getMonthLabel, isSameMonth } from '../utils/format'
+import { formatMoney, getYearMonthKey, getMonthLabel, isSameMonth } from '../utils/format'
 import { useTransactions } from '../context/TransactionContext'
+import { useSettings } from '../context/SettingsContext'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -48,14 +49,14 @@ const AI_TIPS = [
 
 // ─── HorizontalBar ────────────────────────────────────────────────────────────
 
-function HorizontalBar({ label, amount, total, color }) {
+function HorizontalBar({ label, amount, total, color, currency }) {
   const pct = total > 0 ? Math.round((amount / total) * 100) : 0
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5 text-sm">
         <span className="font-medium text-gray-700">{label}</span>
         <span className="text-gray-500">
-          {formatEuro(amount)} <span className="text-gray-400">({pct}%)</span>
+          {formatMoney(amount, currency)} <span className="text-gray-400">({pct}%)</span>
         </span>
       </div>
       <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
@@ -73,6 +74,8 @@ function HorizontalBar({ label, amount, total, color }) {
 function Reports() {
   const [selectedMonth, setSelectedMonth] = useState(getYearMonthKey)
   const { expenses, income, totalExpenses, totalIncome, balance } = useTransactions()
+  const { settings } = useSettings()
+  const currency = settings.currency
 
   // Expenses aggregated by category
   const expensesByCategory = useMemo(() => {
@@ -170,7 +173,7 @@ function Reports() {
               </div>
               <p className="text-sm font-medium text-gray-500">Einnahmen</p>
             </div>
-            <p className="text-2xl font-bold text-green-600">{formatEuro(totalIncome)}</p>
+            <p className="text-2xl font-bold text-green-600">{formatMoney(totalIncome, currency)}</p>
           </Card>
 
           <Card>
@@ -180,7 +183,7 @@ function Reports() {
               </div>
               <p className="text-sm font-medium text-gray-500">Ausgaben</p>
             </div>
-            <p className="text-2xl font-bold text-red-500">{formatEuro(totalExpenses)}</p>
+            <p className="text-2xl font-bold text-red-500">{formatMoney(totalExpenses, currency)}</p>
           </Card>
 
           <Card>
@@ -191,7 +194,7 @@ function Reports() {
               <p className="text-sm font-medium text-gray-500">Bilanz</p>
             </div>
             <p className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-500'}`}>
-              {balance >= 0 ? '+' : ''}{formatEuro(balance)}
+              {balance >= 0 ? '+' : ''}{formatMoney(balance, currency)}
             </p>
           </Card>
         </div>
@@ -207,6 +210,7 @@ function Reports() {
                 amount={cat.amount}
                 total={totalExpenses}
                 color={cat.color}
+                currency={currency}
               />
             ))}
           </div>
@@ -223,6 +227,7 @@ function Reports() {
                 amount={src.amount}
                 total={totalIncome}
                 color={src.color}
+                currency={currency}
               />
             ))}
           </div>
@@ -262,13 +267,13 @@ function Reports() {
                         )}
                       </td>
                       <td className="px-5 py-3.5 text-right text-green-600 font-medium">
-                        {formatEuro(row.income)}
+                        {formatMoney(row.income, currency)}
                       </td>
                       <td className="px-5 py-3.5 text-right text-red-500 font-medium">
-                        {formatEuro(row.expenses)}
+                        {formatMoney(row.expenses, currency)}
                       </td>
                       <td className="px-5 py-3.5 text-right font-semibold text-blue-600">
-                        {row.savings >= 0 ? '+' : ''}{formatEuro(row.savings)}
+                        {row.savings >= 0 ? '+' : ''}{formatMoney(row.savings, currency)}
                       </td>
                       <td className="px-5 py-3.5 text-right">
                         <div className="flex items-center justify-end gap-1.5">

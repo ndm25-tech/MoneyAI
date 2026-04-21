@@ -1,45 +1,35 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { TrendingUp, TrendingDown, Lightbulb, Download } from 'lucide-react'
 import DashboardLayout from '../components/layout/DashboardLayout'
 import Card from '../components/ui/Card'
-import { formatEuro, getYearMonthKey, getMonthLabel } from '../utils/format'
+import { formatEuro, getYearMonthKey, getMonthLabel, isSameMonth } from '../utils/format'
+import { useTransactions } from '../context/TransactionContext'
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const MONTHS = Array.from({ length: 6 }, (_, i) => ({
   value: getYearMonthKey(-i),
   label: getMonthLabel(-i),
 }))
 
-const OVERVIEW = {
-  income: 4030.0,
-  expenses: 1847.5,
-  balance: 2182.5,
+const EXPENSE_CATEGORY_COLORS = {
+  Miete: 'bg-blue-500',
+  Lebensmittel: 'bg-green-500',
+  Shopping: 'bg-purple-500',
+  Transport: 'bg-orange-500',
+  Unterhaltung: 'bg-pink-500',
+  Gesundheit: 'bg-red-400',
+  Bildung: 'bg-indigo-500',
+  Versicherung: 'bg-cyan-500',
 }
 
-const EXPENSE_CATEGORIES = [
-  { label: 'Miete', amount: 800, color: 'bg-blue-500' },
-  { label: 'Lebensmittel', amount: 350, color: 'bg-green-500' },
-  { label: 'Shopping', amount: 200, color: 'bg-purple-500' },
-  { label: 'Transport', amount: 180, color: 'bg-orange-500' },
-  { label: 'Unterhaltung', amount: 150, color: 'bg-pink-500' },
-  { label: 'Sonstiges', amount: 167.5, color: 'bg-gray-400' },
-]
-
-const INCOME_SOURCES = [
-  { label: 'Gehalt', amount: 3250, color: 'bg-green-600' },
-  { label: 'Freelance', amount: 500, color: 'bg-teal-500' },
-  { label: 'Sonstiges', amount: 280, color: 'bg-gray-400' },
-]
-
-const MONTHLY_HISTORY = [
-  { month: 'Nov', income: 3250, expenses: 1980, savings: 1270 },
-  { month: 'Dez', income: 3750, expenses: 2450, savings: 1300 },
-  { month: 'Jan', income: 3250, expenses: 1760, savings: 1490 },
-  { month: 'Feb', income: 3500, expenses: 1650, savings: 1850 },
-  { month: 'Mär', income: 3250, expenses: 1920, savings: 1330 },
-  { month: 'Apr', income: 4030, expenses: 1847.5, savings: 2182.5 },
-]
+const INCOME_CATEGORY_COLORS = {
+  Gehalt: 'bg-green-600',
+  Freelance: 'bg-teal-500',
+  Investitionen: 'bg-blue-500',
+  Nebenjob: 'bg-orange-500',
+  Geschenk: 'bg-pink-500',
+}
 
 const AI_TIPS = [
   {
@@ -82,9 +72,73 @@ function HorizontalBar({ label, amount, total, color }) {
 
 function Reports() {
   const [selectedMonth, setSelectedMonth] = useState(getYearMonthKey)
+  const { expenses, income, totalExpenses, totalIncome, balance } = useTransactions()
 
-  const totalExpenses = EXPENSE_CATEGORIES.reduce((s, c) => s + c.amount, 0)
-  const totalIncome = INCOME_SOURCES.reduce((s, c) => s + c.amount, 0)
+  // Expenses aggregated by category
+  const expensesByCategory = useMemo(() => {
+    const map = new Map()
+    for (const expense of expenses) {
+      map.set(expense.category, (map.get(expense.category) || 0) + Number(expense.amount || 0))
+    }
+    return Array.from(map.entries())
+      .map(([category, total]) => ({
+        label: category,
+        amount: total,
+        color: EXPENSE_CATEGORY_COLORS[category] || 'bg-gray-400',
+      }))
+      .sort((a, b) => b.amount - a.amount)
+  }, [expenses])
+
+  // Income aggregated by source/category
+  const incomeBySource = useMemo(() => {
+    const map = new Map()
+    for (const incomeItem of income) {
+      map.set(incomeItem.category, (map.get(incomeItem.category) || 0) + Number(incomeItem.amount || 0))
+    }
+    return Array.from(map.entries())
+      .map(([category, total]) => ({
+        label: category,
+        amount: total,
+        color: INCOME_CATEGORY_COLORS[category] || 'bg-gray-400',
+      }))
+      .sort((a, b) => b.amount - a.amount)
+  }, [income])
+
+  // Last 6 months trend
+  const monthlyTrend = useMemo(() => {
+    const months = []
+    for (let offset = 5; offset >= 0; offset--) {
+      const expensesSum = expenses
+        .filter(expense => isSameMonth(expense.date, -offset))
+        .reduce((sum, expense) => sum + Number(expense.amount || 0), 0)
+      const incomeSum = income
+        .filter(incomeItem => isSameMonth(incomeItem.date, -offset))
+        .reduce((sum, incomeItem) => sum + Number(incomeItem.amount || 0), 0)
+      months.push({
+        label: getMonthLabel(-offset),
+        expenses: expensesSum,
+        income: incomeSum,
+        savings: incomeSum - expensesSum,
+      })
+    }
+    return months
+  }, [expenses, income])
+
+  // Empty state — no crash, no NaN
+  if (expenses.length === 0 && income.length === 0) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Berichte &amp; Analysen</h1>
+            <p className="text-gray-500 mt-2">
+              Noch keine Daten vorhanden. Füge Ausgaben oder Einnahmen hinzu, um Berichte zu sehen.
+            </p>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
+  }
 
   return (
     <DashboardLayout>
@@ -116,7 +170,7 @@ function Reports() {
               </div>
               <p className="text-sm font-medium text-gray-500">Einnahmen</p>
             </div>
-            <p className="text-2xl font-bold text-green-600">{formatEuro(OVERVIEW.income)}</p>
+            <p className="text-2xl font-bold text-green-600">{formatEuro(totalIncome)}</p>
           </Card>
 
           <Card>
@@ -126,7 +180,7 @@ function Reports() {
               </div>
               <p className="text-sm font-medium text-gray-500">Ausgaben</p>
             </div>
-            <p className="text-2xl font-bold text-red-500">{formatEuro(OVERVIEW.expenses)}</p>
+            <p className="text-2xl font-bold text-red-500">{formatEuro(totalExpenses)}</p>
           </Card>
 
           <Card>
@@ -136,8 +190,8 @@ function Reports() {
               </div>
               <p className="text-sm font-medium text-gray-500">Bilanz</p>
             </div>
-            <p className={`text-2xl font-bold ${OVERVIEW.balance >= 0 ? 'text-blue-600' : 'text-red-500'}`}>
-              {OVERVIEW.balance >= 0 ? '+' : ''}{formatEuro(OVERVIEW.balance)}
+            <p className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-500'}`}>
+              {balance >= 0 ? '+' : ''}{formatEuro(balance)}
             </p>
           </Card>
         </div>
@@ -146,7 +200,7 @@ function Reports() {
         <Card>
           <h2 className="text-lg font-bold text-gray-900 mb-5">Ausgaben nach Kategorie</h2>
           <div className="space-y-4">
-            {EXPENSE_CATEGORIES.map((cat) => (
+            {expensesByCategory.map((cat) => (
               <HorizontalBar
                 key={cat.label}
                 label={cat.label}
@@ -162,7 +216,7 @@ function Reports() {
         <Card>
           <h2 className="text-lg font-bold text-gray-900 mb-5">Einnahmen nach Quelle</h2>
           <div className="space-y-4">
-            {INCOME_SOURCES.map((src) => (
+            {incomeBySource.map((src) => (
               <HorizontalBar
                 key={src.label}
                 label={src.label}
@@ -191,18 +245,18 @@ function Reports() {
                 </tr>
               </thead>
               <tbody>
-                {MONTHLY_HISTORY.map((row, idx) => {
+                {monthlyTrend.map((row, idx) => {
                   const savingsRate = row.income > 0 ? Math.round((row.savings / row.income) * 100) : 0
-                  const prevRow = MONTHLY_HISTORY[idx - 1]
+                  const prevRow = monthlyTrend[idx - 1]
                   const trendUp = prevRow ? row.savings > prevRow.savings : null
-                  const isCurrentMonth = idx === MONTHLY_HISTORY.length - 1
+                  const isCurrentMonth = idx === monthlyTrend.length - 1
                   return (
                     <tr
-                      key={row.month}
+                      key={row.label}
                       className={`border-b border-gray-50 hover:bg-gray-50/60 transition-colors ${isCurrentMonth ? 'bg-primary-50/40' : ''}`}
                     >
                       <td className="px-5 py-3.5 font-semibold text-gray-800">
-                        {row.month}
+                        {row.label}
                         {isCurrentMonth && (
                           <span className="ml-2 text-xs text-primary-600 font-medium">(aktuell)</span>
                         )}
@@ -214,7 +268,7 @@ function Reports() {
                         {formatEuro(row.expenses)}
                       </td>
                       <td className="px-5 py-3.5 text-right font-semibold text-blue-600">
-                        +{formatEuro(row.savings)}
+                        {row.savings >= 0 ? '+' : ''}{formatEuro(row.savings)}
                       </td>
                       <td className="px-5 py-3.5 text-right">
                         <div className="flex items-center justify-end gap-1.5">

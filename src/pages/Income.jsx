@@ -7,8 +7,9 @@ import Input from '../components/ui/Input'
 import Select from '../components/ui/Select'
 import Modal from '../components/ui/Modal'
 import Badge from '../components/ui/Badge'
-import { formatEuro, formatDate, getYearMonthKey, getMonthLabel } from '../utils/format'
+import { formatMoney, formatDate, getYearMonthKey, getMonthLabel } from '../utils/format'
 import { useTransactions } from '../context/TransactionContext'
+import { useSettings } from '../context/SettingsContext'
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 
@@ -51,6 +52,8 @@ const EMPTY_FORM = { description: '', amount: '', category: '', date: '', note: 
 
 function Income() {
   const { income, addIncome, updateIncome, deleteIncome } = useTransactions()
+  const { settings } = useSettings()
+  const currency = settings.currency
   const [selectedMonth, setSelectedMonth] = useState(getYearMonthKey)
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
@@ -192,7 +195,7 @@ function Income() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card>
             <p className="text-sm text-gray-500 mb-1">Gesamteinnahmen</p>
-            <p className="text-2xl font-bold text-green-600">{formatEuro(total)}</p>
+            <p className="text-2xl font-bold text-green-600">{formatMoney(total, currency)}</p>
           </Card>
           <Card>
             <p className="text-sm text-gray-500 mb-1">Quellen</p>
@@ -267,7 +270,7 @@ function Income() {
                         />
                       </td>
                       <td className="px-5 py-3.5 text-right font-semibold text-green-600 whitespace-nowrap">
-                        {formatEuro(entry.amount)}
+                        {formatMoney(entry.amount, currency)}
                       </td>
                       <td className="px-5 py-3.5 text-center">
                         <div className="flex items-center justify-center gap-1">

@@ -1,5 +1,27 @@
+const CURRENCY_LOCALE = {
+  EUR: 'de-DE',
+  USD: 'en-US',
+  GBP: 'en-GB',
+  CHF: 'de-CH',
+}
+
+export function formatMoney(amount, currency = 'EUR') {
+  const value = Number(amount) || 0
+  const locale = CURRENCY_LOCALE[currency] || 'de-DE'
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value)
+  } catch {
+    return `${value.toFixed(2)} ${currency}`
+  }
+}
+
 export function formatEuro(amount) {
-  return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount)
+  return formatMoney(amount, 'EUR')
 }
 
 export function formatDate(dateStr) {

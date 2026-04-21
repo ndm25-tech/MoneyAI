@@ -107,6 +107,7 @@ function Settings() {
       notif,
       compactView,
     })
+    window.dispatchEvent(new Event('moneyai:settings-changed'))
   }, [currency, language, monthlyBudget, weekStart, notif, compactView])
 
   const handleSaveProfile = () => {

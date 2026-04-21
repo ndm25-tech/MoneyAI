@@ -7,8 +7,9 @@ import Input from '../components/ui/Input'
 import Select from '../components/ui/Select'
 import Modal from '../components/ui/Modal'
 import Badge from '../components/ui/Badge'
-import { formatEuro, formatDate, getYearMonthKey, getMonthLabel } from '../utils/format'
+import { formatMoney, formatDate, getYearMonthKey, getMonthLabel } from '../utils/format'
 import { useTransactions } from '../context/TransactionContext'
+import { useSettings } from '../context/SettingsContext'
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 
@@ -54,6 +55,8 @@ const EMPTY_FORM = { description: '', amount: '', category: '', date: '', note: 
 
 function Expenses() {
   const { expenses, addExpense, updateExpense, deleteExpense } = useTransactions()
+  const { settings } = useSettings()
+  const currency = settings.currency
   const [selectedMonth, setSelectedMonth] = useState(getYearMonthKey)
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
@@ -196,7 +199,7 @@ function Expenses() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <Card>
             <p className="text-sm text-gray-500 mb-1">Gesamtausgaben</p>
-            <p className="text-2xl font-bold text-red-600">{formatEuro(total)}</p>
+            <p className="text-2xl font-bold text-red-600">{formatMoney(total, currency)}</p>
           </Card>
           <Card>
             <p className="text-sm text-gray-500 mb-1">Transaktionen</p>
@@ -206,7 +209,7 @@ function Expenses() {
             <p className="text-sm text-gray-500 mb-1">Höchste Ausgabe</p>
             {highest ? (
               <>
-                <p className="text-2xl font-bold text-gray-900">{formatEuro(highest.amount)}</p>
+                <p className="text-2xl font-bold text-gray-900">{formatMoney(highest.amount, currency)}</p>
                 <p className="text-xs text-gray-400 mt-0.5">{highest.description}</p>
               </>
             ) : (
@@ -215,7 +218,7 @@ function Expenses() {
           </Card>
           <Card>
             <p className="text-sm text-gray-500 mb-1">Ø pro Tag</p>
-            <p className="text-2xl font-bold text-gray-900">{formatEuro(avgPerDay)}</p>
+            <p className="text-2xl font-bold text-gray-900">{formatMoney(avgPerDay, currency)}</p>
           </Card>
         </div>
 
@@ -275,7 +278,7 @@ function Expenses() {
                         />
                       </td>
                       <td className="px-5 py-3.5 text-right font-semibold text-red-600 whitespace-nowrap">
-                        {formatEuro(expense.amount)}
+                        {formatMoney(expense.amount, currency)}
                       </td>
                       <td className="px-5 py-3.5 text-center">
                         <div className="flex items-center justify-center gap-1">

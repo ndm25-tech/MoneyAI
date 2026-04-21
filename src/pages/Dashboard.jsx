@@ -12,7 +12,8 @@ import DashboardLayout from '../components/layout/DashboardLayout'
 import Card from '../components/ui/Card'
 import { useAuth } from '../context/AuthContext'
 import { useTransactions } from '../context/TransactionContext'
-import { formatEuro } from '../utils/format'
+import { useSettings } from '../context/SettingsContext'
+import { formatMoney } from '../utils/format'
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -89,7 +90,7 @@ function OverviewCard({ title, value, subtitle, icon: Icon, iconBg, iconColor, b
   )
 }
 
-function CategoryBars() {
+function CategoryBars({ currency }) {
   const total = EXPENSE_CATEGORIES.reduce((s, c) => s + c.amount, 0)
   if (total === 0) return null
   return (
@@ -103,7 +104,7 @@ function CategoryBars() {
               <div className="flex justify-between text-sm mb-1">
                 <span className="font-medium text-gray-700">{cat.label}</span>
                 <span className="text-gray-500">
-                  {formatEuro(cat.amount)}{' '}
+                  {formatMoney(cat.amount, currency)}{' '}
                   <span className="text-gray-400">({pct}%)</span>
                 </span>
               </div>
@@ -121,7 +122,7 @@ function CategoryBars() {
   )
 }
 
-function MonthlyChart() {
+function MonthlyChart({ currency }) {
   const MAX_Y = MONTHLY_CHART_MAX
   return (
     <Card>
@@ -145,13 +146,13 @@ function MonthlyChart() {
                 <div
                   className="flex-1 bg-green-400 rounded-t-sm transition-all duration-500"
                   style={{ height: `${(m.income / MAX_Y) * 100}%` }}
-                  title={`Einnahmen: ${formatEuro(m.income)}`}
+                  title={`Einnahmen: ${formatMoney(m.income, currency)}`}
                 />
                 {/* Expense bar */}
                 <div
                   className="flex-1 bg-red-400 rounded-t-sm transition-all duration-500"
                   style={{ height: `${(m.expenses / MAX_Y) * 100}%` }}
-                  title={`Ausgaben: ${formatEuro(m.expenses)}`}
+                  title={`Ausgaben: ${formatMoney(m.expenses, currency)}`}
                 />
               </div>
               <span className="text-xs text-gray-500 mt-1">{m.month}</span>
@@ -172,7 +173,7 @@ function MonthlyChart() {
   )
 }
 
-function TransactionRow({ tx }) {
+function TransactionRow({ tx, currency }) {
   const isPositive = tx.amount > 0
   return (
     <tr className="hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 last:border-0">
@@ -184,13 +185,13 @@ function TransactionRow({ tx }) {
         </span>
       </td>
       <td className={`py-3 px-4 text-sm font-bold text-right whitespace-nowrap ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-        {isPositive ? '+' : ''}{formatEuro(tx.amount)}
+        {isPositive ? '+' : ''}{formatMoney(tx.amount, currency)}
       </td>
     </tr>
   )
 }
 
-function TransactionCard({ tx }) {
+function TransactionCard({ tx, currency }) {
   const isPositive = tx.amount > 0
   return (
     <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
@@ -199,13 +200,13 @@ function TransactionCard({ tx }) {
         <span className="text-xs text-gray-400">{tx.date} · {tx.category}</span>
       </div>
       <span className={`text-sm font-bold ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-        {isPositive ? '+' : ''}{formatEuro(tx.amount)}
+        {isPositive ? '+' : ''}{formatMoney(tx.amount, currency)}
       </span>
     </div>
   )
 }
 
-function BudgetProgress() {
+function BudgetProgress({ currency }) {
   const pct = Math.round((BUDGET.spent / BUDGET.total) * 100)
   const remaining = BUDGET.total - BUDGET.spent
   const barColor = pct >= 95 ? 'bg-red-500' : pct >= 80 ? 'bg-yellow-500' : 'bg-green-500'
@@ -215,7 +216,7 @@ function BudgetProgress() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold text-gray-900">Budget diesen Monat</h2>
         <span className="text-sm text-gray-500">
-          {formatEuro(BUDGET.spent)} / {formatEuro(BUDGET.total)}
+          {formatMoney(BUDGET.spent, currency)} / {formatMoney(BUDGET.total, currency)}
         </span>
       </div>
 
@@ -227,8 +228,8 @@ function BudgetProgress() {
       </div>
 
       <div className="flex justify-between text-sm text-gray-500 mb-3">
-        <span>Ausgegeben: <span className="font-semibold text-gray-800">{formatEuro(BUDGET.spent)}</span> ({pct}%)</span>
-        <span>Verbleibend: <span className="font-semibold text-gray-800">{formatEuro(remaining)}</span></span>
+        <span>Ausgegeben: <span className="font-semibold text-gray-800">{formatMoney(BUDGET.spent, currency)}</span> ({pct}%)</span>
+        <span>Verbleibend: <span className="font-semibold text-gray-800">{formatMoney(remaining, currency)}</span></span>
       </div>
 
       {pct >= 80 && (
@@ -246,6 +247,8 @@ function BudgetProgress() {
 function Dashboard() {
   const { user } = useAuth()
   const { expenses, income, totalExpenses, totalIncome, balance, savingsRate } = useTransactions()
+  const { settings } = useSettings()
+  const currency = settings.currency
   const username = user?.name || 'Nutzer'
 
   // ── Combined last transactions (expenses + income), sorted by date desc, max 7
@@ -290,7 +293,7 @@ function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <OverviewCard
             title="Einnahmen"
-            value={formatEuro(totalIncome)}
+            value={formatMoney(totalIncome, currency)}
             trend="+12% vs. letzter Monat"
             icon={TrendingUp}
             iconBg="bg-green-100"
@@ -299,7 +302,7 @@ function Dashboard() {
           />
           <OverviewCard
             title="Ausgaben"
-            value={formatEuro(totalExpenses)}
+            value={formatMoney(totalExpenses, currency)}
             trend="-5% vs. letzter Monat"
             icon={TrendingDown}
             iconBg="bg-red-100"
@@ -308,7 +311,7 @@ function Dashboard() {
           />
           <OverviewCard
             title="Bilanz"
-            value={formatEuro(balance)}
+            value={formatMoney(balance, currency)}
             subtitle="Einnahmen − Ausgaben"
             icon={Wallet}
             iconBg="bg-blue-100"
@@ -328,8 +331,8 @@ function Dashboard() {
 
         {/* 3. Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <CategoryBars />
-          <MonthlyChart />
+          <CategoryBars currency={currency} />
+          <MonthlyChart currency={currency} />
         </div>
 
         {/* 4. Transactions */}
@@ -357,7 +360,7 @@ function Dashboard() {
               </thead>
               <tbody>
                 {recentTransactions.map((tx) => (
-                  <TransactionRow key={tx.id} tx={tx} />
+                  <TransactionRow key={tx.id} tx={tx} currency={currency} />
                 ))}
               </tbody>
             </table>
@@ -366,13 +369,13 @@ function Dashboard() {
           {/* Mobile cards */}
           <div className="md:hidden px-6 py-2">
             {recentTransactions.map((tx) => (
-              <TransactionCard key={tx.id} tx={tx} />
+              <TransactionCard key={tx.id} tx={tx} currency={currency} />
             ))}
           </div>
         </Card>
 
         {/* 5. Budget progress */}
-        <BudgetProgress />
+        <BudgetProgress currency={currency} />
 
         {/* 6. Quick actions */}
         <div className="flex flex-col sm:flex-row gap-3">

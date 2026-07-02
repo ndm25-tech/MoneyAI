@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-const STORAGE_KEY = 'moneyai_theme'
+const STORAGE_KEY = 'fyniq_theme'
 const ThemeContext = createContext(null)
 
 function getInitialDarkMode() {

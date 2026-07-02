@@ -10,7 +10,7 @@ import Modal from '../components/ui/Modal'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 
-const SETTINGS_STORAGE_KEY = 'moneyai_settings'
+const SETTINGS_STORAGE_KEY = 'fyniq_settings'
 
 const DEFAULT_SETTINGS = {
   currency: 'EUR',
@@ -107,7 +107,7 @@ function Settings() {
       notif,
       compactView,
     })
-    window.dispatchEvent(new Event('moneyai:settings-changed'))
+    window.dispatchEvent(new Event('fyniq:settings-changed'))
   }, [currency, language, monthlyBudget, weekStart, notif, compactView])
 
   const handleSaveProfile = () => {

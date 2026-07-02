@@ -105,7 +105,7 @@ function MessageBubble({ message }) {
         🤖
       </div>
       <div className="max-w-[80%] sm:max-w-[65%]">
-        <p className="text-xs font-semibold text-primary-600 mb-1">MoneyAI</p>
+        <p className="text-xs font-semibold text-primary-600 mb-1">Fyniq</p>
         <div className="bg-white border border-gray-100 text-gray-800 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm text-sm leading-relaxed">
           {renderText(message.text)}
         </div>
@@ -124,7 +124,7 @@ function TypingIndicator() {
         🤖
       </div>
       <div>
-        <p className="text-xs font-semibold text-primary-600 mb-1">MoneyAI</p>
+        <p className="text-xs font-semibold text-primary-600 mb-1">Fyniq</p>
         <div className="bg-white border border-gray-100 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm inline-flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0ms]" />
           <span className="w-2 h-2 rounded-full bg-gray-400 animate-bounce [animation-delay:150ms]" />

@@ -7,10 +7,10 @@ import {
   MessageSquare,
   Settings,
   LogOut,
+  Wallet,
   Star,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
-import FyniqLogo from '../ui/FyniqLogo'
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -34,8 +34,8 @@ function Sidebar({ onClose }) {
     <div className="flex flex-col h-full bg-sidebar text-white w-64">
       {/* Logo */}
       <div className="flex items-center gap-2 px-6 py-5 border-b border-sidebar-border">
-        <FyniqLogo size={32} />
-        <span className="font-bold text-xl">Fyniq</span>
+        <Wallet className="w-7 h-7 text-primary-400" />
+        <span className="font-bold text-xl">MoneyAI</span>
       </div>
 
       {/* User info */}

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-const STORAGE_KEY = 'fyniq_user'
+const STORAGE_KEY = 'moneyai_user'
 
 const AuthContext = createContext(null)
 

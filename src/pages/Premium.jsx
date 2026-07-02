@@ -104,10 +104,10 @@ function Premium() {
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-yellow-100 text-yellow-700 rounded-full text-sm font-semibold">
             <Star className="w-4 h-4" />
-            Fyniq Premium
+            MoneyAI Premium
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
-            Upgrade auf Fyniq Premium
+            Upgrade auf MoneyAI Premium
           </h1>
           <p className="text-lg text-gray-500">
             Nutze alle Features ohne Limits
@@ -240,7 +240,7 @@ function Premium() {
         ) : (
           <div className="space-y-5">
             <div className="px-4 py-3 bg-primary-50 border border-primary-100 rounded-xl flex justify-between items-center">
-              <span className="text-sm font-medium text-gray-700">Fyniq Premium</span>
+              <span className="text-sm font-medium text-gray-700">MoneyAI Premium</span>
               <span className="text-sm font-bold text-primary-700">{priceLabel}</span>
             </div>
 

@@ -72,7 +72,7 @@ const testimonials = [
   {
     name: 'Sarah M.',
     role: 'Freelancerin',
-    text: 'Fyniq hat mir geholfen, endlich den Überblick über meine Finanzen zu behalten. Die KI-Tipps sind wirklich hilfreich!',
+    text: 'MoneyAI hat mir geholfen, endlich den Überblick über meine Finanzen zu behalten. Die KI-Tipps sind wirklich hilfreich!',
     stars: 5,
   },
   {
@@ -129,7 +129,7 @@ function Landing() {
                 Dein Erfolg.
               </h1>
               <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                Fyniq hilft dir, deine Finanzen intelligent zu verwalten. Mit KI-gestützten
+                MoneyAI hilft dir, deine Finanzen intelligent zu verwalten. Mit KI-gestützten
                 Analysen, personalisierten Tipps und einem übersichtlichen Dashboard behältst
                 du immer den Überblick.
               </p>
@@ -221,7 +221,7 @@ function Landing() {
               Alles was du brauchst
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Fyniq bietet dir alle Tools, um deine Finanzen professionell zu verwalten.
+              MoneyAI bietet dir alle Tools, um deine Finanzen professionell zu verwalten.
             </p>
           </div>
 
@@ -369,7 +369,7 @@ function Landing() {
             Bereit, deine Finanzen zu transformieren?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Schließe dich tausenden von Nutzern an, die mit Fyniq ihre finanzielle Zukunft gestalten.
+            Schließe dich tausenden von Nutzern an, die mit MoneyAI ihre finanzielle Zukunft gestalten.
           </p>
           <Link
             to="/register"

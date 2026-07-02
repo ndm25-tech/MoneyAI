@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import FyniqLogo from '../ui/FyniqLogo'
+import { Wallet } from 'lucide-react'
 
 function Footer() {
   return (
@@ -8,8 +8,8 @@ function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 text-white font-bold text-xl">
-            <FyniqLogo size={28} />
-            <span>Fyniq</span>
+            <Wallet className="w-6 h-6 text-primary-400" />
+            <span>MoneyAI</span>
           </Link>
 
           {/* Links */}
@@ -29,7 +29,7 @@ function Footer() {
           </nav>
 
           {/* Copyright */}
-          <p className="text-sm">© 2026 Fyniq. Alle Rechte vorbehalten.</p>
+          <p className="text-sm">© 2026 MoneyAI. Alle Rechte vorbehalten.</p>
         </div>
       </div>
     </footer>

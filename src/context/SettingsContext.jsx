@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 
-const SETTINGS_STORAGE_KEY = 'fyniq_settings'
+const SETTINGS_STORAGE_KEY = 'moneyai_settings'
 
 const DEFAULT_SETTINGS = {
   currency: 'EUR',
@@ -48,10 +48,10 @@ export function SettingsProvider({ children }) {
     const onCustom = () => refreshSettings()
 
     window.addEventListener('storage', onStorage)
-    window.addEventListener('fyniq:settings-changed', onCustom)
+    window.addEventListener('moneyai:settings-changed', onCustom)
     return () => {
       window.removeEventListener('storage', onStorage)
-      window.removeEventListener('fyniq:settings-changed', onCustom)
+      window.removeEventListener('moneyai:settings-changed', onCustom)
     }
   }, [refreshSettings])
 

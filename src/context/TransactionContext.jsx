@@ -2,8 +2,8 @@ import { createContext, useContext, useState, useMemo, useEffect } from 'react'
 
 const TransactionContext = createContext(null)
 
-const EXPENSES_STORAGE_KEY = 'fyniq_expenses'
-const INCOME_STORAGE_KEY = 'fyniq_income'
+const EXPENSES_STORAGE_KEY = 'moneyai_expenses'
+const INCOME_STORAGE_KEY = 'moneyai_income'
 
 function loadFromStorage(key, fallback) {
   try {

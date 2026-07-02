@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
-import FyniqLogo from '../ui/FyniqLogo'
+import { Wallet, Menu, X } from 'lucide-react'
 
 function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -12,8 +11,8 @@ function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary-600">
-            <FyniqLogo size={32} />
-            <span>Fyniq</span>
+            <Wallet className="w-7 h-7" />
+            <span>MoneyAI</span>
           </Link>
 
           {/* Desktop Nav */}

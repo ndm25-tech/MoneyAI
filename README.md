@@ -1,6 +1,6 @@
-# MoneyAI 💰
+# Fyniq 💰
 
-**MoneyAI** ist eine moderne, KI-gestützte Finanz-App, die dir hilft, deine Einnahmen und Ausgaben zu verwalten, Budget-Ziele zu setzen und personalisierte Finanztipps von einer KI zu erhalten.
+**Fyniq** ist eine moderne, KI-gestützte Finanz-App, die dir hilft, deine Einnahmen und Ausgaben zu verwalten, Budget-Ziele zu setzen und personalisierte Finanztipps von einer KI zu erhalten.
 
 ## ✨ Features
 
@@ -32,8 +32,8 @@
 
 ```bash
 # 1. Repository klonen
-git clone https://github.com/ndm25-tech/MoneyAI.git
-cd MoneyAI
+git clone https://github.com/ndm25-tech/Fyniq.git
+cd Fyniq
 
 # 2. Dependencies installieren
 npm install
@@ -66,7 +66,7 @@ npm run preview
 ## 📁 Projektstruktur
 
 ```
-MoneyAI/
+Fyniq/
 ├── index.html
 ├── package.json
 ├── vite.config.js
@@ -125,4 +125,4 @@ npm run preview   # Produktions-Build vorschauen
 
 ## 📄 Lizenz
 
-© 2026 MoneyAI. Alle Rechte vorbehalten.
+© 2026 Fyniq. Alle Rechte vorbehalten.

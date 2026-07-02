@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Wallet, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import FyniqLogo from '../components/ui/FyniqLogo'
 
 function Register() {
   const [name, setName] = useState('')
@@ -56,8 +57,8 @@ function Register() {
           {/* Logo */}
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex items-center gap-2 text-primary-600 font-bold text-2xl">
-              <Wallet className="w-8 h-8" />
-              MoneyAI
+              <FyniqLogo size={36} />
+              Fyniq
             </Link>
             <h1 className="text-2xl font-bold text-gray-900 mt-4 mb-1">Konto erstellen</h1>
             <p className="text-gray-500">Starte kostenlos durch</p>

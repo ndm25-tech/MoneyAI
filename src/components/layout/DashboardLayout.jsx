@@ -58,7 +58,7 @@ function DashboardLayout({ children }) {
           >
             <Menu className="w-6 h-6" />
           </button>
-          <span className="font-bold text-primary-600">MoneyAI</span>
+          <span className="font-bold text-primary-600">Fyniq</span>
           <div className="w-10" />
         </div>
 

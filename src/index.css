@@ -3,14 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    color-scheme: light;
-  }
-
   body {
-    @apply font-sans;
-    background-color: var(--app-bg);
-    color: var(--app-text);
+    @apply bg-white text-gray-900 font-sans;
   }
 }
 
@@ -24,11 +18,6 @@
 }
 
 /* Dark mode basics */
-.dark {
-  color-scheme: dark;
-}
-
 .dark body {
-  background-color: var(--app-bg);
-  color: var(--app-text);
+  @apply bg-gray-900 text-gray-100;
 }

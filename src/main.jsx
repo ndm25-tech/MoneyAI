@@ -7,7 +7,6 @@ import { TransactionProvider } from './context/TransactionContext.jsx'
 import { ContractProvider } from './context/ContractContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import { SettingsProvider } from './context/SettingsContext.jsx'
-import './styles/tokens.css'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(

@@ -4,6 +4,7 @@ import {
   TrendingDown,
   TrendingUp,
   BarChart3,
+  FileText,
   MessageSquare,
   Settings,
   LogOut,
@@ -17,6 +18,7 @@ const navItems = [
   { to: '/expenses', icon: TrendingDown, label: 'Ausgaben' },
   { to: '/income', icon: TrendingUp, label: 'Einnahmen' },
   { to: '/reports', icon: BarChart3, label: 'Berichte' },
+  { to: '/contracts', icon: FileText, label: 'Verträge' },
   { to: '/ai-chat', icon: MessageSquare, label: 'KI-Chat' },
   { to: '/settings', icon: Settings, label: 'Einstellungen' },
 ]

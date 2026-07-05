@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import Expenses from './pages/Expenses'
 import Income from './pages/Income'
 import Reports from './pages/Reports'
+import Contracts from './pages/Contracts'
 import AIChat from './pages/AIChat'
 import Settings from './pages/Settings'
 import Premium from './pages/Premium'
@@ -47,6 +48,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Reports />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/contracts"
+        element={
+          <ProtectedRoute>
+            <Contracts />
           </ProtectedRoute>
         }
       />

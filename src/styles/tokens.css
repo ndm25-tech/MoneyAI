@@ -1,0 +1,12 @@
+:root {
+  --brand-primary: #2563eb;
+  --brand-accent: #10b981;
+  --sidebar-bg: #0f172a;
+  --app-bg: #ffffff;
+  --app-text: #111827;
+}
+
+.dark {
+  --app-bg: #111827;
+  --app-text: #f3f4f6;
+}

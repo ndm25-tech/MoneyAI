@@ -74,9 +74,13 @@ MoneyAI/
 ├── postcss.config.js
 ├── .env.example
 └── src/
+    ├── assets/               # Bilder, Icons, Platzhalter-Dateien
     ├── main.jsx              # App-Einstiegspunkt
     ├── App.jsx               # Router & Routen
     ├── index.css             # Tailwind CSS
+    ├── hooks/                # Platz für Custom Hooks
+    ├── styles/
+    │   └── tokens.css        # Zentrale Design Tokens
     ├── context/
     │   └── AuthContext.jsx   # Auth-State Management
     ├── components/
